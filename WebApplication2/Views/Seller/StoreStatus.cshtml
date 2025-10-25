@@ -1,0 +1,32 @@
+@model WebApplication2.Models.Store
+
+@{
+    ViewData["Title"] = "Store Status";
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        @if (Model.Status == WebApplication2.Models.StoreStatus.Pending)
+        {
+            <div class="alert alert-info">
+                <h4>Your Store is Pending Review</h4>
+                <p>Your store, "@Model.Name", is currently being reviewed by our team. You will be notified once the review process is complete.</p>
+                @if (Model.PaymentStatus == WebApplication2.Models.PaymentStatus.NotPaid)
+                {
+                    <p>You still need to <a asp-controller="Payment" asp-action="Pay" asp-route-storeId="@Model.Id">submit your payment proof</a>.</p>
+                }
+                else if (Model.PaymentStatus == WebApplication2.Models.PaymentStatus.PendingVerification)
+                {
+                    <p>Your payment proof has been submitted and is awaiting verification.</p>
+                }
+            </div>
+        }
+        else if (Model.Status == WebApplication2.Models.StoreStatus.Rejected)
+        {
+            <div class="alert alert-danger">
+                <h4>Your Store Application was Rejected</h4>
+                <p>Unfortunately, your application for the store "@Model.Name" has been rejected. Please contact support for more information.</p>
+            </div>
+        }
+    </div>
+</div>

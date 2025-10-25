@@ -1,0 +1,77 @@
+@model IEnumerable<WebApplication2.Models.Store>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Store Management</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            There are no stores to manage at the moment.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 @(item.Status == WebApplication2.Models.StoreStatus.Rejected ? "border-danger" : "")">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-0">@item.Name</h5>
+                                <small class="text-muted">Owner: @item.Owner.Email</small>
+                            </div>
+                            <span class="badge bg-@((item.Status == WebApplication2.Models.StoreStatus.Approved) ? "success" : (item.Status == WebApplication2.Models.StoreStatus.Pending) ? "warning" : "danger")">
+                                @item.Status
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Business Address:</strong> @item.BusinessAddress</p>
+                            <p class="card-text"><strong>Registration Number:</strong> @item.BusinessRegistrationNumber</p>
+                            <p class="card-text"><strong>Payment Status:</strong> @item.PaymentStatus</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                @if (item.PaymentStatus == WebApplication2.Models.PaymentStatus.PendingVerification)
+                                {
+                                    <div>
+                                        @if (!string.IsNullOrEmpty(item.PaymentProofPath))
+                                        {
+                                            <a href="@item.PaymentProofPath" class="btn btn-outline-info btn-sm" target="_blank">View Proof</a>
+                                        }
+                                        <form asp-action="ApprovePayment" method="post" class="d-inline">
+                                            <input type="hidden" name="storeId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                        </form>
+                                        <form asp-action="RejectPayment" method="post" class="d-inline ms-1">
+                                            <input type="hidden" name="storeId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                        </form>
+                                    </div>
+                                }
+                                @if (item.Status == WebApplication2.Models.StoreStatus.Approved)
+                                {
+                                    <form asp-action="DisableStore" method="post" class="d-inline">
+                                        <input type="hidden" name="storeId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-warning btn-sm">Disable Store</button>
+                                    </form>
+                                }
+                                @if (item.Status == WebApplication2.Models.StoreStatus.Rejected)
+                                {
+                                    <form asp-action="EnableStore" method="post" class="d-inline">
+                                        <input type="hidden" name="storeId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-info btn-sm">Re-enable Store</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,36 @@
+@model IEnumerable<WebApplication2.Models.Product>
+
+@{
+    ViewData["Title"] = "Seller Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>@ViewBag.StoreName - Products</h2>
+        <a asp-action="AddProduct" class="btn btn-primary">Add New Product</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            You have not added any products yet.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">@product.Description</p>
+                            <p class="card-text"><strong>@product.Price.ToString("C")</strong></p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

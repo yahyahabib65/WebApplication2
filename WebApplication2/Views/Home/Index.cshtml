@@ -1,0 +1,44 @@
+﻿@model IEnumerable<WebApplication2.Models.Product>
+
+@{
+    ViewData["Title"] = "Welcome to SellEase";
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="display-4">Welcome to SellEase</h1>
+        <p class="lead">Your one-stop solution for building a multi-tenant e-commerce platform.</p>
+        <div class="mt-4">
+            <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="RegisterVendor" role="button">Become a Seller</a>
+            <a class="btn btn-secondary btn-lg" asp-area="Identity" asp-page="/Account/Register" role="button">Sign up as a Customer</a>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <h2 class="mb-4">Featured Products</h2>
+    <div class="row">
+        @if (Model.Any())
+        {
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@product.Store.Name</h6>
+                            <p class="card-text">@product.Description</p>
+                            <p class="card-text"><strong>@product.Price.ToString("C")</strong></p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col">
+                <p>No products are available at the moment. Please check back later.</p>
+            </div>
+        }
+    </div>
+</div>

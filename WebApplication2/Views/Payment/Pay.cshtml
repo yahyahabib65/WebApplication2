@@ -1,0 +1,18 @@
+@model WebApplication2.Models.Store
+
+@{
+    ViewData["Title"] = "Pay for Store Activation";
+}
+
+<h2>Pay for Store Activation</h2>
+
+<p>Please pay for the activation of your store: @Model.Name</p>
+
+<form asp-action="ProcessPayment" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="storeId" value="@Model.Id" />
+    <div class="form-group">
+        <label for="paymentProof">Upload Payment Screenshot</label>
+        <input type="file" name="paymentProof" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit for Review</button>
+</form>
