@@ -1,0 +1,27 @@
+@model IEnumerable<WebApplication2.Models.Product>
+
+@{
+    ViewData["Title"] = "Product Report";
+}
+
+<h1>Product Report</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@item.Description</td>
+            </tr>
+        }
+    </tbody>
+</table>

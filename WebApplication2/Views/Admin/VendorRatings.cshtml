@@ -1,0 +1,44 @@
+@model IEnumerable<WebApplication2.Models.VendorRatingViewModel>
+
+@{
+    ViewData["Title"] = "Vendor Ratings";
+}
+
+<h1>Vendor Ratings</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Store Name</th>
+            <th>Average Rating</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.StoreName</td>
+                <td>@item.AverageRating.ToString("0.0") / 5</td>
+                <td>@(item.IsBlocked ? "Blocked" : "Active")</td>
+                <td>
+                    @if (item.IsBlocked)
+                    {
+                        <form asp-action="UnblockVendor" method="post" style="display:inline;">
+                            <input type="hidden" name="storeId" value="@item.StoreId" />
+                            <button type="submit" class="btn btn-success">Unblock</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="BlockVendor" method="post" style="display:inline;">
+                            <input type="hidden" name="storeId" value="@item.StoreId" />
+                            <button type="submit" class="btn btn-danger">Block</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

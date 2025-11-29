@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WebApplication2.Models.SalesReportViewModel>
+
+@{
+    ViewData["Title"] = "Sales Report";
+    var totalSales = Model.Sum(m => m.Payment);
+    var totalTransactions = Model.Count();
+}
+
+<!-- Report Statistics -->
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card bg-gradient-success text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@totalSales.ToString("C")</h2>
+                        <p class="mb-0">Total Sales</p>
+                    </div>
+                    <i class="mdi mdi-cash-multiple mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card bg-gradient-info text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@totalTransactions</h2>
+                        <p class="mb-0">Total Transactions</p>
+                    </div>
+                    <i class="mdi mdi-receipt mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sales Report Table -->
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">Detailed Sales Report</h4>
+                    <div>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="DownloadSalesReportCsv" class="btn btn-outline-success btn-icon-text btn-sm">
+                            <i class="mdi mdi-file-excel btn-icon-prepend"></i> Export CSV
+                        </a>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="DownloadSalesReportPdf" class="btn btn-danger btn-icon-text btn-sm">
+                            <i class="mdi mdi-file-pdf btn-icon-prepend"></i> Export PDF
+                        </a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Vendor ID</th>
+                                <th>Vendor Name</th>
+                                <th>Store Name</th>
+                                <th>Payment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Date.ToString("MMM dd, yyyy")</td>
+                                    <td><span class="badge badge-outline-primary">@item.VendorId.Substring(0, Math.Min(8, item.VendorId.Length))</span></td>
+                                    <td class="font-weight-medium">@item.Name</td>
+                                    <td>@item.StoreName</td>
+                                    <td class="text-success font-weight-bold">@item.Payment.ToString("C")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

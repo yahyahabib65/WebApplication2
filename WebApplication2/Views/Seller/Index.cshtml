@@ -4,33 +4,46 @@
     ViewData["Title"] = "Seller Dashboard";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>@ViewBag.StoreName - Products</h2>
-        <a asp-action="AddProduct" class="btn btn-primary">Add New Product</a>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">@ViewBag.StoreName - Products</h1>
+    <a asp-action="AddProduct" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Add New Product
+    </a>
+</div>
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info" role="alert">
-            You have not added any products yet.
-        </div>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var product in Model)
-            {
-                <div class="col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text">@product.Description</p>
-                            <p class="card-text"><strong>@product.Price.ToString("C")</strong></p>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
+<div class="card">
+    <div class="card-body">
+        <table class="table table-hover datatable" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                            {
+                                <img src="@product.ImageUrl" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" alt="@product.Name">
+                            }
+                        </td>
+                        <td>@product.Name</td>
+                        <td>@product.Description</td>
+                        <td>@product.Price.ToString("C")</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-outline-secondary btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-info btn-sm" title="Details"><i class="bi bi-info-circle"></i></a>
+                            <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-outline-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

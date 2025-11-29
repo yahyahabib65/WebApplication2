@@ -24,5 +24,14 @@ namespace WebApplication2.Models
         [ForeignKey("StoreId")]
         [ValidateNever]
         public Store Store { get; set; }
+
+        public string ImageUrl { get; set; }
+
+        [Display(Name = "Category")]
+        public int? CategoryId { get; set; }
+
+        [ForeignKey("CategoryId")]
+        [ValidateNever]
+        public Category Category { get; set; }
     }
 }

@@ -1,0 +1,126 @@
+﻿@model IEnumerable<WebApplication2.Models.VendorRatingViewModel>
+
+@{
+    ViewData["Title"] = "Vendor Ratings";
+    var totalVendors = Model.Count();
+    var blockedVendors = Model.Count(v => v.IsBlocked);
+    var averageRating = Model.Any() ? Model.Average(v => v.AverageRating) : 0;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Vendor Statistics -->
+<div class="row">
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@totalVendors</h2>
+                        <p class="mb-0">Total Vendors</p>
+                    </div>
+                    <i class="mdi mdi-account-multiple mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card bg-gradient-warning text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@averageRating.ToString("0.0")</h2>
+                        <p class="mb-0">Average Rating</p>
+                    </div>
+                    <i class="mdi mdi-star mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card bg-gradient-danger text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@blockedVendors</h2>
+                        <p class="mb-0">Blocked Vendors</p>
+                    </div>
+                    <i class="mdi mdi-block-helper mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vendor Ratings Table -->
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Vendor Performance & Ratings</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Store Name</th>
+                                <th>Average Rating</th>
+                                <th>Total Reviews</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="font-weight-medium">@item.StoreName</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-star text-warning me-1"></i>
+                                            <span class="font-weight-bold">@item.AverageRating.ToString("0.0")</span>
+                                            <span class="text-muted ms-1">/ 5.0</span>
+                                        </div>
+                                    </td>
+                                    <td>@item.Ratings.Count() reviews</td>
+                                    <td>
+                                        @if (item.IsBlocked)
+                                        {
+                                            <span class="badge badge-danger">
+                                                <i class="mdi mdi-block-helper"></i> Blocked
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">
+                                                <i class="mdi mdi-check-circle"></i> Active
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.IsBlocked)
+                                        {
+                                            <form asp-area="Admin" asp-controller="Home" asp-action="UnblockVendor" method="post" style="display:inline;">
+                                                <input type="hidden" name="storeId" value="@item.StoreId" />
+                                                <button type="submit" class="btn btn-success btn-icon-text btn-sm">
+                                                    <i class="mdi mdi-check-circle btn-icon-prepend"></i> Unblock
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-area="Admin" asp-controller="Home" asp-action="BlockVendor" method="post" style="display:inline;">
+                                                <input type="hidden" name="storeId" value="@item.StoreId" />
+                                                <button type="submit" class="btn btn-danger btn-icon-text btn-sm">
+                                                    <i class="mdi mdi-block-helper btn-icon-prepend"></i> Block
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

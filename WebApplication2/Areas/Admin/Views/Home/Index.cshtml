@@ -1,0 +1,152 @@
+﻿@model WebApplication2.Areas.Admin.Models.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Statistics Cards -->
+<div class="row">
+    <div class="col-md-3 grid-margin stretch-card">
+        <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@Model.TotalStores</h2>
+                        <p class="mb-0">Total Stores</p>
+                    </div>
+                    <i class="mdi mdi-store mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 grid-margin stretch-card">
+        <div class="card bg-gradient-success text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@Model.ApprovedStores</h2>
+                        <p class="mb-0">Approved Stores</p>
+                    </div>
+                    <i class="mdi mdi-check-circle mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 grid-margin stretch-card">
+        <div class="card bg-gradient-warning text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@Model.PendingStores</h2>
+                        <p class="mb-0">Pending Approval</p>
+                    </div>
+                    <i class="mdi mdi-clock-outline mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 grid-margin stretch-card">
+        <div class="card bg-gradient-info text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="font-weight-bold mb-0">@Model.TotalRevenue.ToString("C")</h2>
+                        <p class="mb-0">Total Revenue</p>
+                    </div>
+                    <i class="mdi mdi-currency-usd mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Store Management Table -->
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="card-title mb-0">Store Management</h4>
+                    <div>
+                        <span class="badge badge-success">@Model.ApprovedStores Approved</span>
+                        <span class="badge badge-warning">@Model.PendingStores Pending</span>
+                        <span class="badge badge-danger">@Model.RejectedStores Rejected</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Store Name</th>
+                                <th>Owner</th>
+                                <th>Status</th>
+                                <th>Payment Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Stores)
+                            {
+                                <tr>
+                                    <td class="font-weight-medium">@item.Name</td>
+                                    <td>@item.Owner.Email</td>
+                                    <td>
+                                        <span class="badge @((item.Status == WebApplication2.Models.StoreStatus.Approved) ? "badge-success" : (item.Status == WebApplication2.Models.StoreStatus.Pending) ? "badge-warning" : "badge-danger")">
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge @((item.PaymentStatus == WebApplication2.Models.PaymentStatus.Approved) ? "badge-success" : (item.PaymentStatus == WebApplication2.Models.PaymentStatus.PendingVerification) ? "badge-warning" : "badge-danger")">
+                                            @item.PaymentStatus
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (item.PaymentStatus == WebApplication2.Models.PaymentStatus.PendingVerification)
+                                        {
+                                            @if (!string.IsNullOrEmpty(item.PaymentProofPath))
+                                            {
+                                                <a href="@item.PaymentProofPath" class="btn btn-outline-info btn-icon-text btn-sm" target="_blank" title="View Proof">
+                                                    <i class="mdi mdi-eye btn-icon-prepend"></i> View Proof
+                                                </a>
+                                            }
+                                            <form asp-area="Admin" asp-controller="Home" asp-action="ApprovePayment" method="post" class="d-inline">
+                                                <input type="hidden" name="storeId" value="@item.Id" />
+                                                <button type="submit" class="btn btn-success btn-icon-text btn-sm">
+                                                    <i class="mdi mdi-check btn-icon-prepend"></i> Approve
+                                                </button>
+                                            </form>
+                                            <form asp-area="Admin" asp-controller="Home" asp-action="RejectPayment" method="post" class="d-inline">
+                                                <input type="hidden" name="storeId" value="@item.Id" />
+                                                <button type="submit" class="btn btn-danger btn-icon-text btn-sm">
+                                                    <i class="mdi mdi-close btn-icon-prepend"></i> Reject
+                                                </button>
+                                            </form>
+                                        }
+                                        @if (item.Status == WebApplication2.Models.StoreStatus.Approved)
+                                        {
+                                            <form asp-area="Admin" asp-controller="Home" asp-action="DisableStore" method="post" class="d-inline">
+                                                <input type="hidden" name="storeId" value="@item.Id" />
+                                                <button type="submit" class="btn btn-warning btn-icon-text btn-sm">
+                                                    <i class="mdi mdi-block-helper btn-icon-prepend"></i> Disable
+                                                </button>
+                                            </form>
+                                        }
+                                        @if (item.Status == WebApplication2.Models.StoreStatus.Rejected)
+                                        {
+                                            <form asp-area="Admin" asp-controller="Home" asp-action="EnableStore" method="post" class="d-inline">
+                                                <input type="hidden" name="storeId" value="@item.Id" />
+                                                <button type="submit" class="btn btn-info btn-icon-text btn-sm">
+                                                    <i class="mdi mdi-refresh btn-icon-prepend"></i> Re-enable
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

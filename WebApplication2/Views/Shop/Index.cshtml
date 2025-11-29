@@ -1,0 +1,61 @@
+@model WebApplication2.Models.ShopIndexViewModel
+
+@{
+    ViewData["Title"] = "Shop";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Category Sidebar -->
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Categories</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <a asp-controller="Shop" asp-action="Index" class="list-group-item list-group-item-action">All Products</a>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="@category.Id" class="list-group-item list-group-item-action">@category.Name</a>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <div class="row mb-3">
+                <div class="col">
+                    <form asp-controller="Shop" asp-action="Index" method="get" class="d-flex">
+                        <input type="text" name="searchString" class="form-control me-2" placeholder="Search for products...">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="col">
+                        <div class="card h-100">
+                            <a asp-controller="Shop" asp-action="ProductDetail" asp-route-id="@product.Id">
+                                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;">
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">@product.Name</h5>
+                                <p class="card-text text-muted">@product.Store.Name</p>
+                                <p class="card-text fs-5 fw-bold">@product.Price.ToString("C")</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"] - SellEase Admin</title>
+    <!-- base:css -->
+    <link rel="stylesheet" href="~/admin-theme/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="~/admin-theme/vendors/css/vendor.bundle.base.css">
+    <!-- inject:css -->
+    <link rel="stylesheet" href="~/admin-theme/css/style.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+</head>
+<body>
+    <div class="container-scroller d-flex">
+        <!-- Sidebar -->
+        <partial name="_AdminSidebar" />
+        
+        <!-- Main Container -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- Top Navbar -->
+            <partial name="_AdminNavbar" />
+            
+            <!-- Main Panel -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <partial name="_Notification" />
+                    @RenderBody()
+                </div>
+                
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-sm-flex justify-content-center justify-content-sm-between py-2">
+                                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
+                                    Copyright © SellEase @DateTime.Now.Year
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- base:js -->
+    <script src="~/admin-theme/vendors/js/vendor.bundle.base.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- inject:js -->
+    <script src="~/admin-theme/js/off-canvas.js"></script>
+    <script src="~/admin-theme/js/hoverable-collapse.js"></script>
+    <script src="~/admin-theme/js/template.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

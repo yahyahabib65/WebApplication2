@@ -17,13 +17,30 @@ namespace WebApplication2.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? categoryId)
         {
-            var products = await _context.Products
+            var productsQuery = _context.Products
+                .Include(p => p.Category)
                 .Include(p => p.Store)
-                .Where(p => p.Store.Status == StoreStatus.Approved)
-                .ToListAsync();
-            return View(products);
+                .Where(p => p.Store.Status == StoreStatus.Approved);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                productsQuery = productsQuery.Where(p => p.Name.Contains(searchString) || p.Description.Contains(searchString));
+            }
+
+            if (categoryId.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            var viewModel = new ShopIndexViewModel
+            {
+                Products = await productsQuery.ToListAsync(),
+                Categories = await _context.Categories.ToListAsync()
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

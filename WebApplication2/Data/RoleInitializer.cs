@@ -60,5 +60,20 @@ public static class RoleInitializer
             await userManager.CreateAsync(customerUser, "Password123!");
             await userManager.AddToRoleAsync(customerUser, "Customer");
         }
+
+        // Seed Categories
+        if (!context.Categories.Any())
+        {
+            var categories = new List<Category>
+            {
+                new Category { Name = "Electronics" },
+                new Category { Name = "Books" },
+                new Category { Name = "Clothing" },
+                new Category { Name = "Home & Kitchen" },
+                new Category { Name = "Toys & Games" }
+            };
+            context.Categories.AddRange(categories);
+            await context.SaveChangesAsync();
+        }
     }
 }
